@@ -1,9 +1,14 @@
 <template>
   <Card>
-    <h5>Registrar Cliente</h5>
+    <div class="d-flex flex-row w-100 justify-content-between align-items-center">
+      <h5>{{ isUpdate ? 'Atualizar' : 'Registrar' }} Cliente</h5>
+      <button class="btn" @click="$emit('onCloseClick')">
+        <font-awesome-icon icon="fa-solid fa-close"/>
+      </button>
+    </div>
     <hr>
-    <form @submit.prevent="handleSubmit">
-      <div class="mb-3" >
+    <form @submit.prevent="$emit('onSubmit', formData)">
+      <div class="mb-3">
         <label for="name" class="form-label">Nome</label>
         <input type="text" class="form-control" id="name" v-model="formData.name" placeholder="Seu nome">
       </div>
@@ -19,33 +24,28 @@
         <label for="cpf" class="form-label">CPF</label>
         <input type="text" class="form-control" id="cpf" v-model="formData.cpf" v-maska="'###.###.###-##'">
       </div>
-      <input type="submit" value="Salvar Cliente" class="btn btn-primary mt-4" />
+      <div class="d-flex gap-2">
+        <button type="submit" value="Salvar Cliente" class="btn btn-primary mt-4 mr-4">
+          <span>Salvar Cliente </span>
+          <font-awesome-icon icon="fa-solid fa-save"/>
+        </button>
+        <button class="btn btn-danger mt-4" @click="$emit('onCancelClick')">
+          <span>Cancelar </span>
+          <font-awesome-icon icon="fa-solid fa-x"/>
+        </button>
+      </div>
     </form>
   </Card>
 </template>
 
 <script setup lang="ts">
-import {ref, onMounted, defineEmits} from 'vue'
+import {defineProps} from 'vue'
 import type {ClientFormData} from "@/types/ClientFormData";
 import Card from "@/components/Card.vue";
 
-const emit = defineEmits(['onSubmit'])
-
-const formDefaultValue: ClientFormData = {
-  name: '',
-  email: '',
-  phone: '',
-  cpf: ''
-}
-
-const formData = ref<ClientFormData>(formDefaultValue)
-
-onMounted(() => {
-  formData.value = formDefaultValue
-})
-
-function handleSubmit() {
-  emit('onSubmit', formData.value)
-}
+defineProps<{
+  formData: ClientFormData
+  isUpdate: boolean
+}>()
 
 </script>
